@@ -1,5 +1,3 @@
-import 'dart:ffi';
-
 class Article{
   final int id;
   final String titre;
