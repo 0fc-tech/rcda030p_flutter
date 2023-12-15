@@ -381,13 +381,17 @@ class ListArticlesPage extends StatelessWidget {
           itemCount: listArticles.length,
           itemBuilder: (_, index)=>
               ListTile(
+                onTap: ()=> context.go("/detail",extra: listArticles[index]),
                 title:Text(listArticles[index].titre),
                 subtitle:Text("${listArticles[index].description}\n "
                     "${listArticles[index].priceInCents/100}€"),
-                leading: Image.network(
-                    listArticles[index].urlImage,
-                  width: 60.0,
-                  height: 60.0,
+                leading: Hero(
+                  tag: listArticles[index].id,
+                  child: Image.network(
+                      listArticles[index].urlImage,
+                    width: 60.0,
+                    height: 60.0,
+                  ),
                 ),
                 trailing: IconButton(
                   icon: Icon(Icons.add),

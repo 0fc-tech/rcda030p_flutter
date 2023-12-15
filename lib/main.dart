@@ -1,8 +1,10 @@
+import 'package:eni_shop_flutter/detail_article_page.dart';
 import 'package:eni_shop_flutter/list_articles.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
+import 'article.dart';
 import 'cart.dart';
 import 'cart_page.dart';
 
@@ -28,6 +30,10 @@ class MyApp extends StatelessWidget {
             path:"/",
             builder: (_,__)=>ListArticlesPage(),
             routes: [
+              GoRoute(
+                path: "detail",
+                builder: (_,state)=>DetailArticlePage(state.extra as Article),
+              ),
               GoRoute(
                 path: "cart",
                 builder: (_,__)=>CartPage(),
