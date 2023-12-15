@@ -1,11 +1,13 @@
+import 'dart:convert';
 import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:http/http.dart';
 import 'package:provider/provider.dart';
 
-import 'article.dart';
-import 'cart.dart';
+import '../bo/article.dart';
+import '../bo/cart.dart';
 
 class ListArticlesPage extends StatelessWidget {
   ListArticlesPage({super.key});
@@ -377,27 +379,55 @@ class ListArticlesPage extends StatelessWidget {
           )
         ],
       ),
-      body: ListView.builder(
-          itemCount: listArticles.length,
-          itemBuilder: (_, index)=>
-              ListTile(
-                onTap: ()=> context.go("/detail",extra: listArticles[index]),
-                title:Text(listArticles[index].titre),
-                subtitle:Text("${listArticles[index].description}\n "
-                    "${listArticles[index].priceInCents/100}€"),
-                leading: Hero(
-                  tag: listArticles[index].id,
-                  child: Image.network(
-                      listArticles[index].urlImage,
-                    width: 60.0,
-                    height: 60.0,
-                  ),
-                ),
-                trailing: IconButton(
-                  icon: Icon(Icons.add),
-                  onPressed: ()=> context.read<Cart>().addArticle(listArticles[index]) ,
-                ),
-              )
+      body: FutureBuilder<Response>(
+        future: get(Uri.parse("https://fakestoreapi.com/products")),
+        builder: (context, snapshot) {
+          switch(snapshot.connectionState){
+            case (ConnectionState.done) : {
+              if(snapshot.hasData && snapshot.data != null){
+                listArticles = (jsonDecode(snapshot.data!.body) as List<dynamic>)
+                    .map((e) => Article.fromMap(e)).toList();
+                return ListView.builder(
+                    itemCount: listArticles.length,
+                    itemBuilder: (_, index)=>
+                        ElementListArticle(article: listArticles[index])
+                );
+              }else return Icon(Icons.warning);
+            }
+            default: return CircularProgressIndicator();
+          };
+        }
+      ),
+    );
+  }
+}
+
+class ElementListArticle extends StatelessWidget {
+  const ElementListArticle({
+    super.key,
+    required this.article,
+  });
+
+  final Article article;
+
+  @override
+  Widget build(BuildContext context) {
+    return ListTile(
+      onTap: ()=> context.go("/detail",extra: article),
+      title:Text(article.titre),
+      subtitle:Text("${article.description}\n "
+          "${article.priceInCents/100}€"),
+      leading: Hero(
+        tag: article.id,
+        child: Image.network(
+          article.urlImage,
+          width: 60.0,
+          height: 60.0,
+        ),
+      ),
+      trailing: IconButton(
+        icon: Icon(Icons.add),
+        onPressed: ()=> context.read<Cart>().addArticle(article) ,
       ),
     );
   }

@@ -1,12 +1,12 @@
-import 'package:eni_shop_flutter/detail_article_page.dart';
-import 'package:eni_shop_flutter/list_articles.dart';
+import 'package:eni_shop_flutter/page/detail_article_page.dart';
+import 'package:eni_shop_flutter/page/list_articles.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
-import 'article.dart';
-import 'cart.dart';
-import 'cart_page.dart';
+import 'bo/article.dart';
+import 'bo/cart.dart';
+import 'page/cart_page.dart';
 
 void main() {
   runApp(const MyApp());
@@ -20,6 +20,7 @@ class MyApp extends StatelessWidget {
     return ChangeNotifierProvider(
       create: (BuildContext context) => Cart(),
       child: MaterialApp.router(
+        debugShowCheckedModeBanner: false,
         title: 'Flutter Demo',
         theme: ThemeData(
           colorScheme: ColorScheme.fromSeed(seedColor: Colors.orangeAccent),
